@@ -10,12 +10,12 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ExpenseTrackerApp extends Application {
+public class FinancialToolsApp extends Application {
 
     // List to store expenses
     private List<Expense> expenses = new ArrayList<>();
 
-    // UI elements
+    // UI elements for Expense Tracker
     private TextField descriptionField;
     private TextField amountField;
     private DatePicker datePicker;
@@ -24,7 +24,34 @@ public class ExpenseTrackerApp extends Application {
 
     @Override
     public void start(Stage primaryStage) {
-        // Create UI components
+        // Create TabPane to hold different financial tools
+        TabPane tabPane = new TabPane();
+
+        // Expense Tracker Tab
+        Tab expenseTrackerTab = new Tab("Expense Tracker", createExpenseTrackerLayout());
+        expenseTrackerTab.setClosable(false); // Prevent the tab from being closed
+
+        // Savings Calculator Tab (placeholder, we can add logic here later)
+        Tab savingsCalculatorTab = new Tab("Savings Calculator", createSavingsCalculatorLayout());
+        savingsCalculatorTab.setClosable(false);
+
+        // Loan Calculator Tab (placeholder, we can add logic here later)
+        Tab loanCalculatorTab = new Tab("Loan Calculator", createLoanCalculatorLayout());
+        loanCalculatorTab.setClosable(false);
+
+        // Add tabs to TabPane
+        tabPane.getTabs().addAll(expenseTrackerTab, savingsCalculatorTab, loanCalculatorTab);
+
+        // Set the scene and show the stage
+        Scene scene = new Scene(tabPane, 800, 600);
+        primaryStage.setTitle("Financial Tools");
+        primaryStage.setScene(scene);
+        primaryStage.show();
+    }
+
+    // Method to create the Expense Tracker layout
+    private VBox createExpenseTrackerLayout() {
+        // Create UI components for the expense tracker
         descriptionField = new TextField();
         amountField = new TextField();
         datePicker = new DatePicker();
@@ -50,43 +77,52 @@ public class ExpenseTrackerApp extends Application {
         form.add(datePicker, 1, 2);
         form.add(addButton, 1, 3);
 
-        // Main layout (VBox to stack form, expense list, and total)
-        VBox mainLayout = new VBox(10);
-        mainLayout.setPadding(new Insets(15));
-        mainLayout.getChildren().addAll(form, new Label("Expenses:"), expenseListView, totalExpenseLabel);
+        // Main layout for expense tracker (VBox to stack form, expense list, and total)
+        VBox layout = new VBox(10);
+        layout.setPadding(new Insets(15));
+        layout.getChildren().addAll(form, new Label("Expenses:"), expenseListView, totalExpenseLabel);
 
-        // Set the scene and show the stage
-        Scene scene = new Scene(mainLayout, 400, 400);
-        primaryStage.setTitle("Expense Tracker");
-        primaryStage.setScene(scene);
-        primaryStage.show();
+        return layout;
+    }
+
+    // Placeholder method to create Savings Calculator layout
+    private VBox createSavingsCalculatorLayout() {
+        VBox layout = new VBox(10);
+        layout.setPadding(new Insets(15));
+        layout.getChildren().add(new Label("Savings Calculator: Under Construction"));
+        // Add your savings calculator components here
+        return layout;
+    }
+
+    // Placeholder method to create Loan Calculator layout
+    private VBox createLoanCalculatorLayout() {
+        VBox layout = new VBox(10);
+        layout.setPadding(new Insets(15));
+        layout.getChildren().add(new Label("Loan Calculator: Under Construction"));
+        // Add your loan calculator components here
+        return layout;
     }
 
     // Method to add an expense
-    // Method to add an expense
     private void addExpense() {
-        double amount = 0.0; // Declare amount variable
+        double amount = 0.0;
 
         try {
-            // Get description
             String description = descriptionField.getText();
             if (description == null || description.trim().isEmpty()) {
                 throw new IllegalArgumentException("Description cannot be empty.");
             }
 
-            // Get date
             LocalDate date = datePicker.getValue();
             if (date == null) {
                 throw new IllegalArgumentException("Please select a valid date.");
             }
 
-            // Get and parse the amount
             if (amountField.getText() == null || amountField.getText().trim().isEmpty()) {
                 throw new IllegalArgumentException("Amount is empty. Please enter a valid number.");
             }
             amount = Double.parseDouble(amountField.getText());
 
-            // Create an expense and add it to the list
             Expense expense = new Expense(description, amount, date);
             expenses.add(expense);
 
@@ -101,15 +137,11 @@ public class ExpenseTrackerApp extends Application {
 
             System.out.println("Added expense: " + amount);
         } catch (NumberFormatException e) {
-            // Handle invalid number input
             System.out.println("Invalid input. Please enter a valid number.");
         } catch (IllegalArgumentException e) {
-            // Handle custom validation errors (like empty description or date)
             System.out.println(e.getMessage());
         }
     }
-
-
 
     // Method to update the expense list in the UI
     private void updateExpenseList() {
@@ -129,3 +161,5 @@ public class ExpenseTrackerApp extends Application {
         launch(args);
     }
 }
+
+
