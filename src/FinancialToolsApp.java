@@ -39,8 +39,12 @@ public class FinancialToolsApp extends Application {
         Tab loanCalculatorTab = new Tab("Loan Calculator", createLoanCalculatorLayout());
         loanCalculatorTab.setClosable(false);
 
+        // Loan Calculator Tab (placeholder, we can add logic here later)
+        Tab expenseReportTab = new Tab("Expense Report", createExpenseReportLayout());
+        expenseReportTab.setClosable(false);
+
         // Add tabs to TabPane
-        tabPane.getTabs().addAll(expenseTrackerTab, savingsCalculatorTab, loanCalculatorTab);
+        tabPane.getTabs().addAll(expenseTrackerTab, savingsCalculatorTab, loanCalculatorTab, expenseReportTab);
 
         // Set the scene and show the stage
         Scene scene = new Scene(tabPane, 800, 600);
@@ -87,11 +91,74 @@ public class FinancialToolsApp extends Application {
 
     // Placeholder method to create Savings Calculator layout
     private VBox createSavingsCalculatorLayout() {
+        // Input fields for the calculator
+        TextField initialDepositField = new TextField();
+        TextField monthlyDepositField = new TextField();
+        TextField interestRateField = new TextField();
+        TextField yearsField = new TextField();
+
+        // Button to calculate savings
+        Button calculateButton = new Button("Calculate Savings");
+
+        // Label to display the result
+        Label resultLabel = new Label("Total Savings: $0.00");
+
+        // Layout for the form
+        GridPane form = new GridPane();
+        form.setPadding(new Insets(10));
+        form.setHgap(10);
+        form.setVgap(10);
+
+        form.add(new Label("Initial Deposit ($):"), 0, 0);
+        form.add(initialDepositField, 1, 0);
+        form.add(new Label("Monthly Deposit ($):"), 0, 1);
+        form.add(monthlyDepositField, 1, 1);
+        form.add(new Label("Annual Interest Rate (%):"), 0, 2);
+        form.add(interestRateField, 1, 2);
+        form.add(new Label("Number of Years:"), 0, 3);
+        form.add(yearsField, 1, 3);
+        form.add(calculateButton, 1, 4);
+
+        // Event handler for calculate button
+        calculateButton.setOnAction(e -> {
+            try {
+                // Get input values
+                double initialDeposit = Double.parseDouble(initialDepositField.getText());
+                double monthlyDeposit = Double.parseDouble(monthlyDepositField.getText());
+                double annualInterestRate = Double.parseDouble(interestRateField.getText()) / 100; // convert percentage to decimal
+                int years = Integer.parseInt(yearsField.getText());
+
+                // Calculate total savings
+                double totalSavings = calculateSavings(initialDeposit, monthlyDeposit, annualInterestRate, years);
+
+                // Update the result label
+                resultLabel.setText("Total Savings: $" + String.format("%.2f", totalSavings));
+            } catch (NumberFormatException ex) {
+                resultLabel.setText("Please enter valid numbers.");
+            }
+        });
+
+        // Main layout for savings calculator
         VBox layout = new VBox(10);
         layout.setPadding(new Insets(15));
-        layout.getChildren().add(new Label("Savings Calculator: Under Construction"));
-        // Add your savings calculator components here
+        layout.getChildren().addAll(form, resultLabel);
+
         return layout;
+    }
+
+    // Method to calculate savings with compound interest
+    private double calculateSavings(double initialDeposit, double monthlyDeposit, double annualInterestRate, int years) {
+        int n = 12; // Monthly compounding
+        int t = years; // Time in years
+
+        // Calculate the future value of the initial deposit
+        double futureValueInitialDeposit = initialDeposit * Math.pow(1 + annualInterestRate / n, n * t);
+
+        // Calculate the future value of the monthly deposits
+        double futureValueMonthlyDeposits = monthlyDeposit * (Math.pow(1 + annualInterestRate / n, n * t) - 1) / (annualInterestRate / n);
+
+        // Total savings is the sum of both
+        return futureValueInitialDeposit + futureValueMonthlyDeposits;
     }
 
     // Placeholder method to create Loan Calculator layout
@@ -99,6 +166,14 @@ public class FinancialToolsApp extends Application {
         VBox layout = new VBox(10);
         layout.setPadding(new Insets(15));
         layout.getChildren().add(new Label("Loan Calculator: Under Construction"));
+        // Add your loan calculator components here
+        return layout;
+    }
+
+    private VBox createExpenseReportLayout() {
+        VBox layout = new VBox(10);
+        layout.setPadding(new Insets(15));
+        layout.getChildren().add(new Label("Expense Report: Under Construction"));
         // Add your loan calculator components here
         return layout;
     }
