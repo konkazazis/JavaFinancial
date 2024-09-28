@@ -96,8 +96,22 @@ public class FinancialToolsApp extends Application {
         expenseReportTab.setClosable(false);
         tabPane.getTabs().addAll(expenseTrackerTab, savingsCalculatorTab, loanCalculatorTab, expenseReportTab);
 
-        // Set the main scene with TabPane after login
-        Scene mainScene = new Scene(tabPane, 800, 600);
+        // Create the Logout button
+        Button logoutButton = new Button("Logout");
+        logoutButton.setOnAction(e -> {
+            // Go back to the login screen when clicked
+            VBox loginLayout = createLoginLayout(primaryStage);
+            Scene loginScene = new Scene(loginLayout, 800, 600);
+            primaryStage.setScene(loginScene);  // Switch back to login scene
+        });
+
+        // Create a VBox for TabPane and Logout button
+        VBox mainLayout = new VBox(10, tabPane, logoutButton);
+        mainLayout.setPadding(new Insets(20));
+        mainLayout.setAlignment(Pos.CENTER);
+
+        // Set the main scene with TabPane and Logout button after login
+        Scene mainScene = new Scene(mainLayout, 800, 600);
         primaryStage.setTitle("Financial Tools");
         primaryStage.setScene(mainScene);
         primaryStage.show();
